@@ -1,0 +1,21 @@
+name: todo
+version: 0.1.0
+
+authors:
+  - MrBocch <jorgealberto1436@gmail.com>
+
+targets:
+  todo:
+    main: src/todo.cr
+
+crystal: '>= 1.14.0'
+
+license: MIT
+
+dependencies:
+  db:
+    github: crystal-lang/crystal-db
+  sqlite3:
+    github: crystal-lang/crystal-sqlite3
+  tallboy:
+    github: epoch/tallboy
