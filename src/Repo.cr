@@ -2,18 +2,26 @@ require "db"
 require "sqlite3"
 require "time"
 
-class Repo
-  #def initialize()
-  #end
+module Repo
+  DB_PATH = "./test.db"
+
   def self.connect()
-    db_path = "./test.db"
-    if !File.exists?(db_path)
-      init_db(db_path)
+    if !File.exists?(DB_PATH)
+      init_db(DB_PATH)
+    end
+  end
+
+  def self.insert_task(title : String, due_date : String)
+    DB.open("sqlite3://#{DB_PATH}") do |db|
+      db.exec <<-SQL, title, due_date, 1
+        INSERT INTO Task (Title, DueDate, GroupID)
+        VALUES (?, ?, ?)
+      SQL
     end
   end
 
   private def self.init_db(path : String) : Nil
-    DB.open("sqlite3://#{path}") do |db|
+    DB.open("sqlite3://#{DB_PATH}") do |db|
       db.exec <<-SQL
         CREATE TABLE IF NOT EXISTS Task(
               TaskID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,3 +50,7 @@ class Repo
 end
 
 Repo.connect()
+Repo.insert_task("DispMov Lab #1", "2025-04-10 02:05:40")
+Repo.insert_task("DispMov Lab #1", "2025-04-10 01:00:00")
+Repo.insert_task("DispMov Lab #2", "2025-10-10 02:05:40")
+Repo.insert_task("DispMov Lab #3", "2026-04-10 02:05:40")
