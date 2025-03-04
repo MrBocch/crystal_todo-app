@@ -95,8 +95,3 @@ module Repo
     end
   end
 end
-
-Repo.connect()
-Repo.insert_task("DispMov Lab #3", "2026-04-10 02:05:40")
-a = Repo.select_evr_task()
-p! a
