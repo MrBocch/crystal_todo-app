@@ -2,7 +2,25 @@ require "db"
 require "sqlite3"
 require "time"
 
+struct Task
+  property taskID, title, due_date, completed, completion_date, groupID
+  def intialiaze(@taskID : Int64,
+                @title : String,
+                @due_date : String,
+                @completed : Bool,
+                @completion_date : (String | Nil),
+                @groupID : Int64)
+  end
+end
+
+enum GroupID
+  DUE
+  COMPLETED
+  FAILED
+end
+
 module Repo
+  # this probably wont work
   DB_PATH = "./test.db"
 
   def self.connect()
@@ -18,6 +36,35 @@ module Repo
         VALUES (?, ?, ?)
       SQL
     end
+  end
+
+  def self.select_evr_task() : Array(Task)
+    rows = [] of Task
+    DB.open("sqlite3://#{DB_PATH}") do |db|
+      # so i made a struct for the query result, have an array of these
+      # rs is a: SQLite3::ResultSet, am i dumb, i cant find any documentation
+      # chatgpt: "rs values must be read sequentially"
+      # very interesting, if you dont access everything sequantially its an error
+      db.query "select * from Task" do |rs|
+            rs.each do
+              row = Task.new()
+              # first Taskid
+              row.taskID = rs.read(Int64)
+              # title
+              row.title = rs.read(String)
+              # date
+              row.due_date = rs.read(String)
+              # completed bool
+              row.completed = rs.read(Bool)
+              # completion date can be nil?
+              row.completion_date = rs.read(String | Nil)
+              # groupID
+              row.groupID = rs.read(Int64)
+              rows.push row
+            end
+          end
+    end
+    return rows
   end
 
   private def self.init_db(path : String) : Nil
@@ -50,7 +97,6 @@ module Repo
 end
 
 Repo.connect()
-Repo.insert_task("DispMov Lab #1", "2025-04-10 02:05:40")
-Repo.insert_task("DispMov Lab #1", "2025-04-10 01:00:00")
-Repo.insert_task("DispMov Lab #2", "2025-10-10 02:05:40")
 Repo.insert_task("DispMov Lab #3", "2026-04-10 02:05:40")
+a = Repo.select_evr_task()
+p! a
