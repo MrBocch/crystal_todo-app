@@ -64,12 +64,15 @@ def get_date_time
   puts "Day (#{tday})?"
   d = now_or_later(gets(), tday)
 
-  puts "Hour?"
+  puts "Hour? (Military Time)"
   hour = gets() || ""
+  hour = hour.size < 2 ? "0#{hour}" : hour
   puts "Minute?"
   min = gets() || ""
+  min = min.size < 2 ? "0#{min}" : hour
   # make sure to follow correct format, so sqlite can sort it
-  # return "#{d}-#{m}-#{y} | #{hour}:#{min}"
+  # 2023-12-31 23:59:59
+  return "#{y}-#{m}-#{d} #{hour}:#{min}:00"
 end
 
 def now_or_later(time : (String | Nil), predetermined : String) : String
