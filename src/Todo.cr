@@ -1,5 +1,6 @@
 require "./repo.cr"
 require "tallboy"
+require "time"
 
 # TODO: Write documentation for `Todo`
 module Todo
@@ -30,24 +31,58 @@ module Todo
 
     case c
     when "1"
+      insert_task
     when "2"
-    when ".q", "quit", "exit"
+    when ".q", "quit", "exit", "q"
       break
     else
       puts "Dont recognize #{c}"
     end
   end
 
-  def insert_task
-    get_date_time
-  end
 
-  def get_date_time
-    puts "Year?"
-    puts "Month?"
-    puts "Day?"
+end
 
-    puts "Hour?"
-    puts "Minute?"
+
+def insert_task
+  puts "What is it?"
+  title = gets() || ""
+  d = get_date_time
+  Repo.insert_task(title, d)
+end
+
+def get_date_time
+  tyear = Time.local.to_s("%Y")
+  puts "Year (#{tyear})?"
+  y = now_or_later(gets(), tyear)
+
+  tmonth = Time.local.to_s("%m")
+  puts "Month (#{tmonth})?"
+  m = now_or_later(gets(), tmonth)
+
+  tday = Time.local.to_s("%d")
+  puts "Day (#{tday})?"
+  d = now_or_later(gets(), tday)
+
+  puts "Hour?"
+  hour = gets() || ""
+  puts "Minute?"
+  min = gets() || ""
+  # make sure to follow correct format, so sqlite can sort it
+  # return "#{d}-#{m}-#{y} | #{hour}:#{min}"
+end
+
+def now_or_later(time : (String | Nil), predetermined : String) : String
+  time = time || ""
+  time != "" ? time : predetermined
+end
+
+struct Table_Time
+  property year, month, day, hour, minute
+  def initialize(@year   : String,
+                 @month  : String,
+                 @day    : String,
+                 @hour   : String,
+                 @minute : String)
   end
 end
