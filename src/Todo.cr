@@ -5,23 +5,10 @@ require "time"
 # TODO: Write documentation for `Todo`
 module Todo
   VERSION = "0.1.0"
-
-  rows = Repo.select_evr_task()
-  table = Tallboy.table do
-    header do
-      cell "What?", align: :center
-      cell "When?"
-    end
-
-    rows.each do |t|
-      row [t.title, t.due_date]
-    end
-  end
-
   puts "CLI-TODO"
-  puts table
 
   loop do
+    show_table(1)
     puts ""
     puts "(1) New task"
     puts "(2) Completed task"
@@ -40,12 +27,12 @@ module Todo
     end
   end
 
-
 end
 
 
+
 def insert_task
-  puts "What is it?"
+  print "What is it?\n>"
   title = gets() || ""
   d = get_date_time
   Repo.insert_task(title, d)
@@ -53,21 +40,21 @@ end
 
 def get_date_time
   tyear = Time.local.to_s("%Y")
-  puts "Year (#{tyear})?"
+  print "Year (#{tyear})?\n> "
   y = now_or_later(gets(), tyear)
 
   tmonth = Time.local.to_s("%m")
-  puts "Month (#{tmonth})?"
+  print "Month (#{tmonth})?\n> "
   m = now_or_later(gets(), tmonth)
 
   tday = Time.local.to_s("%d")
-  puts "Day (#{tday})?"
+  print "Day (#{tday})?\n> "
   d = now_or_later(gets(), tday)
 
-  puts "Hour? (Military Time)"
+  print "Hour? (Military Time)\n>"
   hour = gets() || ""
   hour = hour.size < 2 ? "0#{hour}" : hour
-  puts "Minute?"
+  print "Minute?\n> "
   min = gets() || ""
   min = min.size < 2 ? "0#{min}" : hour
   # make sure to follow correct format, so sqlite can sort it
@@ -80,12 +67,37 @@ def now_or_later(time : (String | Nil), predetermined : String) : String
   time != "" ? time : predetermined
 end
 
-struct Table_Time
-  property year, month, day, hour, minute
-  def initialize(@year   : String,
-                 @month  : String,
-                 @day    : String,
-                 @hour   : String,
-                 @minute : String)
-  end
+# i was going to write some cleaver way
+# of using a hashmap or a set, to set
+# settings on the table, but you know what
+# fackit, unsophisticated
+# 1 : Title, DueWhen
+# 2 : ID, Title
+#
+def show_table(option : Int32) : Nil
+    rows = Repo.select_evr_task()
+    table = Tallboy.table do
+      header do
+        # cell k, align: :center
+        case option
+        when 1
+          cell "Title", align: :center
+          cell "When", align: :center
+        when 2
+          cell "ID", align: :center
+          cell "Title", align: :center
+        end
+
+      end
+      rows.each do |t|
+        case option
+        when 1
+          row [t.title, t.due_date]
+        when 2
+          row [t.taskID, t.title]
+        end
+      end
+    end
+
+  puts table
 end

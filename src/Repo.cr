@@ -45,7 +45,7 @@ module Repo
       # rs is a: SQLite3::ResultSet, am i dumb, i cant find any documentation
       # chatgpt: "rs values must be read sequentially"
       # very interesting, if you dont access everything sequantially its an error
-      db.query "select * from Task" do |rs|
+      db.query "SELECT * FROM Task ORDER BY DueDate" do |rs|
             rs.each do
               row = Task.new()
               # first Taskid
