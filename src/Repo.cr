@@ -38,6 +38,18 @@ module Repo
     end
   end
 
+  def self.complete_task(id : Int64, completion_date : String) : Nil
+    DB.open("sqlite3://#{DB_PATH}") do |db|
+      db.exec <<-SQL, true, completion_date, 2, id
+        UPDATE Task
+        SET Completed      = ?,
+            CompletionDate = ?,
+            GroupID        = ?
+        WHERE TaskID       = ?
+      SQL
+    end
+  end
+
   def self.select_evr_task() : Array(Task)
     rows = [] of Task
     DB.open("sqlite3://#{DB_PATH}") do |db|
@@ -45,7 +57,7 @@ module Repo
       # rs is a: SQLite3::ResultSet, am i dumb, i cant find any documentation
       # chatgpt: "rs values must be read sequentially"
       # very interesting, if you dont access everything sequantially its an error
-      db.query "SELECT * FROM Task ORDER BY DueDate" do |rs|
+      db.query "SELECT * FROM Task WHERE GroupID = 1 ORDER BY DueDate" do |rs|
             rs.each do
               row = Task.new()
               # first Taskid

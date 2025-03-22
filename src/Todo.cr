@@ -20,6 +20,7 @@ module Todo
     when "1"
       insert_task
     when "2"
+      completed_task
     when ".q", "quit", "exit", "q"
       break
     else
@@ -38,6 +39,15 @@ def insert_task
   Repo.insert_task(title, d)
 end
 
+def completed_task
+  show_table(2)
+  print("What have you completed?\n> ")
+  id = (gets() || "").to_i64
+  puts "enter date"
+  date = get_date_time
+  Repo.complete_task(id, date)
+end
+
 def get_date_time
   tyear = Time.local.to_s("%Y")
   print "Year (#{tyear})?\n> "
@@ -51,7 +61,7 @@ def get_date_time
   print "Day (#{tday})?\n> "
   d = now_or_later(gets(), tday)
 
-  print "Hour? (Military Time)\n>"
+  print "Hour? (Military Time)\n> "
   hour = gets() || ""
   hour = hour.size < 2 ? "0#{hour}" : hour
   print "Minute?\n> "
@@ -92,7 +102,9 @@ def show_table(option : Int32) : Nil
       rows.each do |t|
         case option
         when 1
-          row [t.title, t.due_date]
+          s_date = t.due_date.as(String).split(" ")
+          date = "#{s_date[0].split("-").reverse().join("-")} #{s_date[1]}"
+          row [t.title, date]
         when 2
           row [t.taskID, t.title]
         end
