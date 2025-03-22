@@ -2,6 +2,8 @@
 
 CLI - Todo App
 
+![showcase.png](showcase.png)
+
 ## Installation
 
 Install Crystal compiler and compile program
@@ -21,7 +23,7 @@ make sure its not being used by another app.
 ## Todo
 
 I originally created this for organizing my self but
-then I discovered Obsidian, I much rather use Obsidian
+then I discovered Obsidian. I much rather use Obsidian
 but decided it would be a waste to not to atleast finish
 what I started.
 
