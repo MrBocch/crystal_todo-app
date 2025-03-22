@@ -1,6 +1,7 @@
 require "db"
 require "sqlite3"
 require "time"
+require "path"
 
 struct Task
   property taskID, title, due_date, completed, completion_date, groupID
@@ -20,11 +21,20 @@ enum GroupID
 end
 
 module Repo
-  # this probably wont work
-  DB_PATH = "./test.db"
+  # <3 windows users
+  PATH    = "#{ENV["HOME"]}/.config/TodoApp/"
+  DB_PATH = "#{ENV["HOME"]}/.config/TodoApp/db.db"
 
   def self.connect()
     if !File.exists?(DB_PATH)
+      puts "Will create app folder here\n\n      #{PATH}\n\n"
+      puts "Make sure to not have anything here you dont want overwritten"
+      puts "ok?"
+      gets()
+
+      if !Dir.exists?(PATH)
+        Dir.mkdir(PATH)
+      end
       init_db(DB_PATH)
     end
   end

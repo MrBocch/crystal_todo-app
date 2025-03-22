@@ -5,14 +5,16 @@ require "time"
 # TODO: Write documentation for `Todo`
 module Todo
   VERSION = "0.1.0"
-  puts "CLI-TODO"
 
+  Repo.connect()
+
+  puts "CLI-TODO"
   loop do
     show_table(1)
     puts ""
     puts "(1) New task"
     puts "(2) Completed task"
-    puts "(.q) Quit"
+    puts "(q) Quit"
     print "> "
     c = gets() || ""
 
@@ -33,7 +35,7 @@ end
 
 
 def insert_task
-  print "What is it?\n>"
+  print "What is it?\n> "
   title = gets() || ""
   d = get_date_time
   Repo.insert_task(title, d)

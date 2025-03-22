@@ -4,12 +4,25 @@ CLI - Todo App
 
 ## Installation
 
-TODO: Write installation instructions here
+Install Crystal compiler and compile program
+
+```
+shards install
+crystal build src/Todo.cr
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+Used as any CLI application.
 
-## Contributors
+Writes to `home/<user>/.config/TodoApp/` so make sure
+make sure its not being used by another app.
 
-- [MrBocch](https://github.com/your-github-user) - creator and maintainer
+## Todo
+
+I originally created this for organizing my self but
+then I discovered Obsidian, I much rather use Obsidian
+but decided it would be a waste to not to atleast finish
+what I started.
+
+I had so many features in mind when I first started.
